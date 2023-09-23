@@ -39,8 +39,21 @@ df[list(pd.get_dummies(df['Embarked']).columns)] = pd.get_dummies(df['Embarked']
 
 df.drop('Embarked', axis = 1, inplace=True)
 
+def is_alone(row):
+    if row['SibSp'] + row['Parch'] == 0:
+        return 1
+    return 0
+
+df['Alone'] = df.apply(is_alone, axis = 1)
+
+print(df.pivot_table(values= 'Age', columns='Alone',
+        index= 'Survived',aggfunc='count'))
+
 df.info()
-#___________________________________________________________________________________________#
+#___________________________________________________________________________________________#scikit-learn
+
+
+
 
 
 
