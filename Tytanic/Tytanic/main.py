@@ -49,7 +49,7 @@ df['Alone'] = df.apply(is_alone, axis = 1)
 print(df.pivot_table(values= 'Age', columns='Alone',
         index= 'Survived',aggfunc='count'))
 
-df.info()
+#df.info()
 #___________________________________________________________________________________________#scikit-learn
 
 
@@ -66,7 +66,7 @@ print(aa)
 print("Без сім'")
 print(bb)
 """
-
+"""
 family = df[df['Parch'] > 0]
 alone = df[df['Parch'] == 0]
 
@@ -79,8 +79,62 @@ if Survived_alone > Survived_family:
 elif Survived_alone < Survived_family:
     print("Виживаність пасажирів з сім'єю більша.")
 
-
+"""
 
 
 #print(Survived_alone)
 #print(Survived_family)
+
+#________________________________________________________________________________________________________________
+
+#Крок 0. Підключення потрібних модулів
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score 
+
+# Крок 1. Розділяємо набір даних на тестування та навчання
+X = df.drop('Survived',axis=1)
+y = df['Survived']
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size =0.25)
+
+
+# Крок 2. Стандартизіція
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+
+#Крок 3. Стоворення об'єкту класифікатора KNN
+classifiar = KNeighborsClassifier(n_neighbors = 3)
+
+
+
+#Крок 4. Навчання моделі
+classifiar.fit(X_train,y_train)
+
+
+
+# Крок 5. Передбачення
+y_pred = classifiar.predict(X_test)
+
+
+
+#print(y_pred)
+
+
+#Крок 6. Оцінка точності прогнозу
+
+for p,t in zip(y_pred,y_test):
+    print(f'p={p};t={t}')
+
+percent = accuracy_score(y_test,y_pred) * 100 
+
+print(f'Процент правильно передбачуваних результатів {percent}%')
+
+print(confusion_matrix(y_test,y_pred))
+
+
+
+
